@@ -11,6 +11,9 @@ import {
     Text,
     Toast,
     Spinner,
+    ListItem,
+    CheckBox,
+    Body,
 } from "native-base"
 import { GlobalContext } from "../../data/state"
 import { sharedStyles, colors } from "../../data/styles"
@@ -19,6 +22,9 @@ import { Center } from "../shared"
 
 interface LoginState {
     name: string
+    shopName: string
+    address: string
+    terms: boolean
     loading: boolean
 }
 
@@ -29,12 +35,15 @@ export class Register extends React.Component<any, LoginState> {
         super(props)
         this.state = {
             name: "",
+            shopName: "",
+            address: "",
+            terms: false,
             loading: false,
         }
     }
 
     render() {
-        const { name, loading } = this.state
+        const { name, shopName, address, terms, loading } = this.state
         return (
             <View style={styles.container}>
                 <Image
@@ -43,17 +52,17 @@ export class Register extends React.Component<any, LoginState> {
                 />
                 <Text
                     style={{
-                        ...sharedStyles.sectionTitle,
+                        ...sharedStyles.sectionDescription,
                         textAlign: "center",
                     }}>
-                    Complete Profile
+                    Complete your profile to continue
                 </Text>
 
                 <Content style={styles.loginForm}>
                     <Form>
                         <Item floatingLabel>
                             <Label style={sharedStyles.sectionDescription}>
-                                Full Name
+                                Your Name
                             </Label>
                             <Input
                                 value={name}
@@ -66,6 +75,43 @@ export class Register extends React.Component<any, LoginState> {
                             />
                         </Item>
 
+                        <Item floatingLabel>
+                            <Label style={sharedStyles.sectionDescription}>
+                                Shop Name
+                            </Label>
+                            <Input
+                                value={shopName}
+                                style={{ fontSize: 24, marginTop: 16 }}
+                                textContentType="name"
+                                onChangeText={(text) =>
+                                    this.setState({ shopName: text })
+                                }
+                                disabled={loading}
+                            />
+                        </Item>
+
+                        <Item floatingLabel>
+                            <Label style={sharedStyles.sectionDescription}>
+                                Shop's Street Address
+                            </Label>
+                            <Input
+                                value={address}
+                                style={{ fontSize: 18, marginTop: 16 }}
+                                textContentType="streetAddressLine1"
+                                onChangeText={(text) =>
+                                    this.setState({ address: text })
+                                }
+                                disabled={loading}
+                            />
+                        </Item>
+
+                        <ListItem>
+                            <CheckBox checked={terms} color={colors.primary} onPress={()=>this.setState({terms: !terms})} />
+                            <Body>
+                                <Text>By completing registration you agree with Terms of Service and Privacy policy</Text>
+                            </Body>
+                        </ListItem>
+
                         {loading && (
                             <Center>
                                 <Spinner color={colors.primary} />
@@ -74,7 +120,7 @@ export class Register extends React.Component<any, LoginState> {
 
                         {!loading && (
                             <Button style={{ margin: 10 }} primary block>
-                                <Text>Reset</Text>
+                                <Text>Register Shop</Text>
                             </Button>
                         )}
                     </Form>
