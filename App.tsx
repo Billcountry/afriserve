@@ -6,10 +6,12 @@ import { Login } from "./src/components/auth/login"
 import { Register } from "./src/components/auth/register"
 import { Splash } from "./src/components/splash"
 import { Error } from "./src/components/error"
+import { Activation } from "./src/components/activate"
 import getTheme from "./native-base-theme/components/index"
 import common from "./native-base-theme/variables/commonColor"
 import auth from "@react-native-firebase/auth"
 import firestore from "@react-native-firebase/firestore"
+import { Shop, ShopUser } from "./src/data/shop"
 
 @observer
 export default class App extends React.Component {
@@ -44,12 +46,23 @@ export default class App extends React.Component {
             .then((querySnapshot) => {
                 if (querySnapshot.size) {
                     // User already belongs to a shop. Login to the top shop
+                    const snapshot = querySnapshot.docs[0]
+                    const shopUser = new ShopUser(snapshot.id, snapshot)
+                    const shop = new Shop(shopUser.shopId)
+                    this.globalState.shop = shop
+                    if (shop.verified) {
+                        this.globalState.page = "main"
+                    } else {
+                        this.globalState.page = "activate"
+                    }
+                    // Redirect to activation page or the main page
                 } else {
                     // Take user to the registration page
                     this.globalState.page = "register"
                 }
             })
             .catch((err) => {
+                console.log({ err })
                 //Maybe show an error page
                 this.globalState.page = "error"
             })
@@ -65,6 +78,7 @@ export default class App extends React.Component {
                             {state.page === "login" && <Login />}
                             {state.page === "register" && <Register />}
                             {state.page === "error" && <Error />}
+                            {state.page === "activate" && <Activation />}
                         </Container>
                     </GlobalContext.Provider>
                 </StyleProvider>
