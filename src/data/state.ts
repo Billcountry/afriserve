@@ -1,9 +1,9 @@
 import { createContext } from "react"
 import { observable } from "mobx"
-import firebase from "firebase"
+import { FirebaseAuthTypes } from "@react-native-firebase/auth"
 
 export class GlobalState {
-    @observable authorized: firebase.User | null = null
+    @observable authorized: FirebaseAuthTypes.User | null = null
     @observable loading: boolean = true
     @observable page: "login" | "register" | "activate" | "splash" = "splash"
 }

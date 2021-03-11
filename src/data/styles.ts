@@ -1,6 +1,10 @@
 import { StyleSheet } from "react-native"
 import { Colors } from "react-native/Libraries/NewAppScreen"
 
+export const colors = {
+    primary: "#795548",
+}
+
 export const sharedStyles = StyleSheet.create({
     scrollView: {
         backgroundColor: Colors.lighter,
