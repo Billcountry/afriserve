@@ -1,12 +1,13 @@
 import React from "react"
 import { observer } from "mobx-react"
-import { Container, StyleProvider, Root, Toast } from "native-base"
+import { Container, StyleProvider, Root } from "native-base"
 import { GlobalState, GlobalContext } from "./src/data/state"
 import { Login } from "./src/components/auth/login"
 import { Register } from "./src/components/auth/register"
 import { Splash } from "./src/components/splash"
 import { Error } from "./src/components/error"
 import { Activation } from "./src/components/activate"
+import { MainPage } from "./src/components"
 import getTheme from "./native-base-theme/components/index"
 import common from "./native-base-theme/variables/commonColor"
 import auth from "@react-native-firebase/auth"
@@ -48,14 +49,8 @@ export default class App extends React.Component {
                     // User already belongs to a shop. Login to the top shop
                     const snapshot = querySnapshot.docs[0]
                     const shopUser = new ShopUser(snapshot.id, snapshot)
-                    const shop = new Shop(shopUser.shopId)
-                    this.globalState.shop = shop
-                    if (shop.verified) {
-                        this.globalState.page = "main"
-                    } else {
-                        this.globalState.page = "activate"
-                    }
-                    // Redirect to activation page or the main page
+                    this.globalState.shop = new Shop(shopUser.shopId)
+                    this.globalState.page = "main"
                 } else {
                     // Take user to the registration page
                     this.globalState.page = "register"
@@ -78,7 +73,16 @@ export default class App extends React.Component {
                             {state.page === "login" && <Login />}
                             {state.page === "register" && <Register />}
                             {state.page === "error" && <Error />}
-                            {state.page === "activate" && <Activation />}
+                            {Boolean(
+                                state.shop &&
+                                    state.shop.verified &&
+                                    state.page === "main"
+                            ) && <MainPage />}
+                            {Boolean(
+                                state.shop &&
+                                    !state.shop.verified &&
+                                    state.page === "main"
+                            ) && <Activation />}
                         </Container>
                     </GlobalContext.Provider>
                 </StyleProvider>
