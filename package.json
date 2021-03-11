@@ -10,8 +10,9 @@
         "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
     },
     "dependencies": {
-        "mobx": "^6.1.8",
-        "mobx-react": "^7.1.0",
+        "firebase": "^8.2.10",
+        "mobx": "5.15.4",
+        "mobx-react": "6.2.2",
         "native-base": "^2.15.2",
         "react": "16.13.1",
         "react-native": "0.63.4"
