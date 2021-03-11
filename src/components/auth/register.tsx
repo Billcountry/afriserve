@@ -15,10 +15,12 @@ import {
     CheckBox,
     Body,
 } from "native-base"
-import { GlobalContext } from "../../data/state"
+import { GlobalContext, GlobalState } from "../../data/state"
 import { sharedStyles, colors } from "../../data/styles"
-import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth"
+import { uniqueId } from "../../utils"
+import { FirebaseFirestoreTypes } from "@react-native-firebase/firestore"
 import { Center } from "../shared"
+import { Shop, ShopUser } from "../../data/shop"
 
 interface LoginState {
     name: string
@@ -42,6 +44,63 @@ export class Register extends React.Component<any, LoginState> {
         }
     }
 
+    completeRegistration() {
+        const { name, shopName, address, terms } = this.state
+        const state: GlobalState = this.context
+        let error = ""
+        if (name.length < 3) {
+            error = "Please provide your name"
+        } else if (shopName.length < 3) {
+            error = "Please provide the name of your shop"
+        } else if (address.length < 5) {
+            error = "Please provide the street address of your shop"
+        } else if (!terms) {
+            error =
+                "You're required to accept the terms and conditions before proceeding"
+        }
+        if (error) {
+            Toast.show({
+                text: error,
+                buttonText: "Ok",
+                type: "danger",
+                duration: 5000,
+            })
+            return
+        }
+
+        this.setState({ loading: true })
+
+        const handler = (err: Error) => {
+            console.log(err)
+            state.page = "error"
+        }
+
+        // Add name to the user
+        state.authorized
+            ?.updateProfile({ displayName: name })
+            .then(() => {
+                // Create a shop.
+                const shop = new Shop(uniqueId())
+                shop.name = shopName
+                shop.address = address
+                shop.update()
+                    .then(() => {
+                        // Create a shop user
+                        const user = new ShopUser(uniqueId())
+                        user.shopId = shop.doc.id
+                        if (state.authorized !== null)
+                            user.userId = state.authorized.uid
+                        user.update()
+                            .then(() => {
+                                state.page = "activate"
+                            })
+                            .catch(handler)
+                    })
+                    .catch(handler)
+            })
+            .catch(handler)
+    }
+
     render() {
         const { name, shopName, address, terms, loading } = this.state
         return (
@@ -55,7 +114,7 @@ export class Register extends React.Component<any, LoginState> {
                         ...sharedStyles.sectionDescription,
                         textAlign: "center",
                     }}>
-                    Complete your profile to continue
+                    Just a few more details...
                 </Text>
 
                 <Content style={styles.loginForm}>
@@ -106,9 +165,16 @@ export class Register extends React.Component<any, LoginState> {
                         </Item>
 
                         <ListItem>
-                            <CheckBox checked={terms} color={colors.primary} onPress={()=>this.setState({terms: !terms})} />
+                            <CheckBox
+                                checked={terms}
+                                color={colors.primary}
+                                onPress={() => this.setState({ terms: !terms })}
+                            />
                             <Body>
-                                <Text>By completing registration you agree with Terms of Service and Privacy policy</Text>
+                                <Text>
+                                    By completing registration you agree with
+                                    Terms of Service and Privacy policy
+                                </Text>
                             </Body>
                         </ListItem>
 
@@ -119,7 +185,11 @@ export class Register extends React.Component<any, LoginState> {
                         )}
 
                         {!loading && (
-                            <Button style={{ margin: 10 }} primary block>
+                            <Button
+                                style={{ margin: 10 }}
+                                onPress={this.completeRegistration.bind(this)}
+                                primary
+                                block>
                                 <Text>Register Shop</Text>
                             </Button>
                         )}
