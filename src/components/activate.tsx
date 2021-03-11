@@ -4,7 +4,7 @@ import { StyleSheet, View, Image, Text } from "react-native"
 import { sharedStyles } from "../data/styles"
 
 @observer
-export class Error extends React.Component {
+export class Activation extends React.Component {
     render() {
         return (
             <View style={styles.container}>
@@ -12,11 +12,13 @@ export class Error extends React.Component {
                     style={styles.logo}
                     source={require("../assets/logo.png")}
                 />
-                <Text style={sharedStyles.sectionTitle}>Afriserve Error</Text>
+                <Text style={sharedStyles.sectionTitle}>
+                    Afriserve Verification Pending
+                </Text>
                 <Text
                     style={{ ...sharedStyles.sectionDescription, margin: 10 }}>
-                    An error occurred while loading the application. Kindly
-                    restart the app. If this problem persists contact
+                    Kindly be patient as we verify your details before you can
+                    start using afriserve. For further details contact
                     me@billcountry.tech.
                 </Text>
             </View>
