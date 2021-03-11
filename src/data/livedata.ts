@@ -1,5 +1,5 @@
 import { observable } from "mobx"
-import { FirebaseFirestoreTypes } from "@react-native-firebase/firestore"
+import firestore, { FirebaseFirestoreTypes } from "@react-native-firebase/firestore"
 
 export abstract class LiveData {
     @observable loading: boolean = false
@@ -7,14 +7,14 @@ export abstract class LiveData {
     doc: FirebaseFirestoreTypes.DocumentReference
 
     constructor(
-        doc: FirebaseFirestoreTypes.DocumentReference,
+        id: string,
         snapshot?: FirebaseFirestoreTypes.DocumentSnapshot
     ) {
         this.loading = !snapshot
-        this.doc = doc
+        this.doc = firestore().collection(`${this.constructor.name}s`).doc(id)
 
         if (!snapshot) {
-            doc.get().then((snapshot) => {
+            this.doc.get().then((snapshot) => {
                 this.loading = false
                 this.exists = snapshot.exists
                 if (snapshot.exists) this.processSnapshot(snapshot)
@@ -22,7 +22,7 @@ export abstract class LiveData {
         } else {
             this.processSnapshot(snapshot)
         }
-        doc.onSnapshot((snapshot) => {
+        this.doc.onSnapshot((snapshot) => {
             this.loading = false
             this.exists = snapshot.exists
             if (snapshot.exists) this.processSnapshot(snapshot)
