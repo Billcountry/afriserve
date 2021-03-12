@@ -49,7 +49,7 @@ export default class App extends React.Component {
                     // User already belongs to a shop. Login to the top shop
                     const snapshot = querySnapshot.docs[0]
                     const shopUser = new ShopUser(snapshot.id, snapshot)
-                    this.globalState.shop = new Shop(shopUser.shopId)
+                    this.globalState.shop = new Shop(shopUser.ShopId)
                     this.globalState.page = "main"
                 } else {
                     // Take user to the registration page
@@ -75,12 +75,12 @@ export default class App extends React.Component {
                             {state.page === "error" && <Error />}
                             {Boolean(
                                 state.shop &&
-                                    state.shop.verified &&
+                                    state.shop.Verified &&
                                     state.page === "main"
                             ) && <MainPage />}
                             {Boolean(
                                 state.shop &&
-                                    !state.shop.verified &&
+                                    !state.shop.Verified &&
                                     state.page === "main"
                             ) && <Activation />}
                         </Container>

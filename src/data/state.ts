@@ -13,6 +13,7 @@ export class GlobalState {
         | "splash"
         | "error"
         | "main" = "splash"
+    @observable main_screen: "home" | "sales" | "customers" = "home"
     @observable shop: Shop | null = null
 }
 
