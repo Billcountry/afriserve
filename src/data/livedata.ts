@@ -61,6 +61,10 @@ export abstract class LiveData {
     update() {
         return this.doc.set(this.data())
     }
+
+    collection(): FirebaseFirestoreTypes.CollectionReference {
+        return firestore().collection(`${this.constructor.name}s`)
+    }
 }
 
 function setValue(object: any, key: string, value: any) {
