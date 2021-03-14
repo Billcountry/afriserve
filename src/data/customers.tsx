@@ -1,5 +1,6 @@
 import { LiveData } from "./livedata"
-import { observable } from "mobx"
+import { observable, computed } from "mobx"
+import { getValidPhone } from "../utils"
 
 export class Customer extends LiveData {
     @observable Name: string = ""
@@ -10,5 +11,9 @@ export class Customer extends LiveData {
     @observable Registered: Date = new Date()
     fields() {
         return ["Name", "Email", "Phone", "ShopId", "Amount", "Registered"]
+    }
+
+    @computed get phoneValid(): boolean {
+        return Boolean(getValidPhone(this.Phone))
     }
 }
