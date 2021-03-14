@@ -1,5 +1,6 @@
 import React from "react"
 import { StyleSheet } from "react-native"
+import { observer } from "mobx-react"
 import {
     View,
     Text,
@@ -14,6 +15,7 @@ import {
 import { colors } from "../../data/styles"
 import { GlobalContext, GlobalState } from "../../data/state"
 
+@observer
 export class HomePage extends React.Component {
     static contextType = GlobalContext
 

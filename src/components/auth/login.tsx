@@ -16,6 +16,7 @@ import { GlobalContext } from "../../data/state"
 import { sharedStyles, colors } from "../../data/styles"
 import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth"
 import { Center } from "../shared"
+import { getValidPhone } from "../../utils"
 
 interface LoginState {
     phone: string
@@ -40,8 +41,8 @@ export class Login extends React.Component<any, LoginState> {
     }
 
     startSignIn() {
-        let { phone } = this.state
-        if (phone.match(/^(\+254|254|0)[1|7]\d{8}$/) === null) {
+        const phone = getValidPhone(this.state.phone)
+        if (phone === null) {
             Toast.show({
                 text: "Please enter a valid phone number",
                 buttonText: "Ok",
@@ -51,13 +52,6 @@ export class Login extends React.Component<any, LoginState> {
             return
         }
         this.setState({ loading: true })
-
-        if (phone.length === 10) {
-            phone = `+254${phone.substr(1)}`
-        }
-        if (phone.length === 12) {
-            phone = `+${phone}`
-        }
 
         auth()
             .signInWithPhoneNumber(phone)
