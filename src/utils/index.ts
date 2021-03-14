@@ -34,3 +34,16 @@ export const uniqueId = () =>
     (
         Date.now().toString(36) + Math.random().toString(36).substr(2, 9)
     ).toLowerCase()
+
+export function getValidPhone(phone: string): string | null {
+    if (phone.match(/^(\+254|254|0)[1|7]\d{8}$/) === null) {
+        return null
+    }
+    if (phone.length === 10) {
+        phone = `+254${phone.substr(1)}`
+    }
+    if (phone.length === 12) {
+        phone = `+${phone}`
+    }
+    return phone
+}
